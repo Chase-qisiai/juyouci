@@ -1,0 +1,1 @@
+{"private":true,"scripts":{"test":"node tests/browser.cjs"},"devDependencies":{"playwright":"^1.58.0"}}

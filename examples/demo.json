@@ -1,0 +1,66 @@
+{
+  "title": "追剧词汇 · 交互体验",
+  "deck_id": "demo:original-examples:v1:zh",
+  "sources": [
+    "原创演示句，仅展示学习页功能，不属于任何真实剧集。"
+  ],
+  "note": "演示版 · 8 个原创例句。正式使用时会从你指定剧集的真实字幕中选词。",
+  "cards": [
+    {
+      "term": "figure out",
+      "meaning": "弄明白；找到办法",
+      "ipa": "/ˈfɪɡjər aʊt/",
+      "sentence": "We can figure out the schedule after lunch.",
+      "translation": "午饭后我们可以把时间安排弄清楚。"
+    },
+    {
+      "term": "hold off",
+      "meaning": "暂缓",
+      "ipa": "/hoʊld ɔːf/",
+      "sentence": "Let’s hold off on ordering until everyone arrives.",
+      "translation": "等大家到齐再点餐吧。"
+    },
+    {
+      "term": "run into",
+      "meaning": "偶然遇见",
+      "ipa": "/rʌn ˈɪntuː/",
+      "sentence": "I didn’t expect to run into my neighbor at the museum.",
+      "translation": "我没想到会在博物馆偶遇邻居。"
+    },
+    {
+      "term": "pull off",
+      "meaning": "成功做到困难的事",
+      "ipa": "/pʊl ɔːf/",
+      "sentence": "With a little practice, we might pull off this performance.",
+      "translation": "稍加练习，我们也许就能完成这场演出。"
+    },
+    {
+      "term": "on the fence",
+      "meaning": "犹豫不决",
+      "ipa": "/ɑːn ðə fens/",
+      "sentence": "I’m still on the fence about taking the evening class.",
+      "translation": "我还在犹豫要不要上晚课。"
+    },
+    {
+      "term": "catch up",
+      "meaning": "了解近况；叙旧",
+      "ipa": "/kætʃ ʌp/",
+      "sentence": "Let’s catch up over coffee this weekend.",
+      "translation": "这周末我们喝杯咖啡叙叙旧吧。"
+    },
+    {
+      "term": "turn down",
+      "meaning": "拒绝",
+      "ipa": "/tɜːrn daʊn/",
+      "sentence": "She had to turn down the invitation because of work.",
+      "translation": "她因为工作不得不拒绝邀请。"
+    },
+    {
+      "term": "give it a shot",
+      "meaning": "试一试",
+      "ipa": "/ɡɪv ɪt ə ʃɑːt/",
+      "sentence": "The recipe looks tricky, but I’ll give it a shot.",
+      "translation": "这道菜看着不好做，不过我想试一试。"
+    }
+  ]
+}
