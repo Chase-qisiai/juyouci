@@ -27,6 +27,22 @@ def validate(data):
             if not isinstance(card.get(field), str) or not card[field].strip():
                 raise ValueError(f'第 {i} 项缺少非空 {field}')
         row = {k: card[k].strip() for k in FIELDS}
+        targets = card.get('targets', [row['term']])
+        if not isinstance(targets, list) or not targets or any(not isinstance(t, str) or not t.strip() for t in targets):
+            raise ValueError(f'第 {i} 项 targets 必须是非空字符串数组')
+        spans = []
+        for target in targets:
+            pattern = r'(?<!\w)' + re.escape(target) + r'(?!\w)'
+            matches = list(re.finditer(pattern, row['sentence'], re.IGNORECASE))
+            if not matches:
+                raise ValueError(f'第 {i} 项目标 {target!r} 未出现在原句中；请填写原句中的实际词形 targets')
+            spans.extend((m.start(), m.end()) for m in matches)
+        spans = sorted(set(spans))
+        if any(a[1] > z[0] for a, z in zip(spans, spans[1:])):
+            raise ValueError(f'第 {i} 项 targets 重叠')
+        # JavaScript indexes UTF-16 code units, not Python Unicode characters.
+        offset = lambda n: len(row['sentence'][:n].encode('utf-16-le')) // 2
+        row['target_spans'] = [[offset(a), offset(z)] for a, z in spans]
         sentence = re.sub(r'\s+', ' ', row['sentence']).casefold()
         if sentence in seen:
             raise ValueError(f'第 {i} 项英文原句重复')
