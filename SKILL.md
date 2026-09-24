@@ -1,9 +1,9 @@
 ---
-name: gbro-series-vocab
-description: 追剧学英语。根据英美剧剧名与集数或用户提供的英文字幕，提取实用词汇与原句，直接生成可离线打开的交互 HTML 学习页，支持翻卡、掌握标记、复习筛选、搜索及进度备份，无需 Anki。用于“追剧学英语”“series vocab”“生成剧集词汇网页”等请求。
+name: juyouci
+description: 剧有词，追剧学英语。根据英美剧剧名与集数或用户提供的英文字幕，提取实用词汇与原句，直接生成可离线打开的交互 HTML 学习页，支持翻卡、掌握标记、复习筛选、搜索及进度备份，无需 Anki。用于“剧有词”“追剧学英语”“series vocab”“生成剧集词汇网页”等请求。
 ---
 
-# 追剧学英语 · HTML 版
+# 剧有词
 
 基于 [狗哥笔记原版](https://github.com/pyang5166/gbro-series-vocab) 改编，保留 LICENSE。默认交付独立 HTML，不要求用户安装 Anki、导入 CSV 或启动服务器。生成脚本只依赖 Python 3 标准库；用户学习只需浏览器。
 

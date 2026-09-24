@@ -1,4 +1,4 @@
 interface:
-  display_name: "追剧学英语 · HTML 版"
+  display_name: "剧有词"
   short_description: "从剧集字幕生成可直接打开的交互词汇学习页，翻卡复习并保存进度，无需 Anki"
-  default_prompt: "使用 $gbro-series-vocab 为我指定的剧集生成可直接学习的 HTML 词汇页。"
+  default_prompt: "使用 $juyouci 为我指定的剧集生成可直接学习的 HTML 词汇页。"

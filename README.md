@@ -1,4 +1,6 @@
-# 追剧学英语 · HTML 版
+# 剧有词
+
+**看一集，学几句。**
 
 给出剧名 + 集数，AI 从实际字幕中挑选实用词汇，生成一个可直接打开的 HTML 学习页。无需 Anki，无需注册，无需启动服务器。
 
@@ -19,13 +21,13 @@
 ## 安装到 Codex
 
 ```bash
-git clone https://github.com/Chase-qisiai/gbro-series-vocab-html.git ~/.codex/skills/gbro-series-vocab
+git clone https://github.com/Chase-qisiai/juyouci.git ~/.codex/skills/juyouci
 ```
 
 如果目标目录已存在，请先备份或合并，避免覆盖自己的配置。安装后新开一个 Codex 任务使用：
 
 ```text
-使用 $gbro-series-vocab，帮我生成 Breaking Bad S02E03 的 HTML 词汇学习页。
+使用 $juyouci，帮我生成 Breaking Bad S02E03 的 HTML 词汇学习页。
 ```
 
 也可以直接提供英文字幕或剧本文字。AI 负责核实来源、筛词及翻译，生成脚本负责可靠地制作学习页。默认目标 50 条；字幕不足时如实交付实际数量。
