@@ -12,45 +12,30 @@ const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors
 const url='file://'+path.join(root,'examples/demo.html');
 await context.setOffline(true);await page.goto(url);
 assert.equal(await page.locator('#total').textContent(),'8');
-assert.equal(await page.locator('#answer').isVisible(),true);
-assert.equal(await page.locator('#ratings').isVisible(),false);
+assert.equal(await page.locator('#learn-panel').isVisible(),true);
+assert.equal(await page.locator('#recall-panel').isVisible(),false);
 assert.equal(await page.locator('#target').textContent(),'figure out');
 assert.equal(await page.locator('#sentence mark').textContent(),'figure out');
-await page.locator('#start').click();assert.equal(await page.locator('#learned').textContent(),'0');
-assert.equal(await page.locator('#target').textContent(),'hold off');
-for(let i=0;i<3;i++)await page.locator('#start').click();
-assert.equal(await page.locator('#target').textContent(),'figure out');
-assert.match(await page.locator('#position').textContent(),/回忆词义/);
-assert.equal(await page.locator('#answer').isVisible(),false);
-await page.locator('#reveal').click();await page.locator('#again').click();
-assert.notEqual(await page.locator('#target').textContent(),'figure out');
-await page.locator('#filter').selectOption('again');
-assert.equal(await page.locator('#target').textContent(),'figure out');
-await page.locator('#reveal').click();await page.locator('#known').click();
-assert.equal(await page.locator('#learned').textContent(),'0');
-assert.match(await page.locator('#position').textContent(),/回想英文/);
+for(let i=0;i<4;i++)await page.locator('#start').click();
+assert.equal(await page.locator('#recall-panel').isVisible(),true);
+assert.equal(await page.locator('#learn-panel').isVisible(),false);
 assert.equal(await page.locator('#sentence mark').textContent(),'________');
-assert.equal(await page.locator('#speak').isVisible(),false);
-await page.reload(); // intermediate progress resumes as cloze
-assert.match(await page.locator('#position').textContent(),/回想英文/);
-await page.locator('#reveal').click();assert.equal(await page.locator('#sentence mark').textContent(),'figure out');
-await page.locator('#known').click();assert.equal(await page.locator('#learned').textContent(),'1');
+assert.equal(await page.locator('#prompt').textContent(),'弄明白；找到办法');
+await page.locator('#answer-input').fill('wrong');await page.locator('#check').click();
+assert.match(await page.locator('#feedback').textContent(),/答案：figure out/);
+await page.locator('#continue').click();
+await page.locator('#filter').selectOption('again');
+assert.equal(await page.locator('#prompt').textContent(),'弄明白；找到办法');
+await page.locator('#answer-input').fill('FIGURE OUT!');await page.locator('#check').click();
+assert.match(await page.locator('#feedback').textContent(),/答对了/);
+await page.locator('#continue').click();assert.equal(await page.locator('#learned').textContent(),'1');
 await page.reload();assert.equal(await page.locator('#learned').textContent(),'1');
-assert.notEqual(await page.locator('#target').textContent(),'figure out');
-// Finish every card; no one-click completion after initial exposure.
-let steps=0;while(await page.locator('#start').isVisible()||await page.locator('#reveal').isVisible()){
- if(++steps>40)throw Error('queue did not finish');
- if(await page.locator('#start').isVisible())await page.locator('#start').click();
- else{await page.locator('#reveal').click();await page.locator('#known').click();}
-}
-assert.equal(await page.locator('#learned').textContent(),'8');
-assert.match(await page.locator('#position').textContent(),/完成/);
-await page.locator('#list-tab').click();await page.locator('#search').fill('coffee');assert.equal(await page.locator('.word').count(),1);
 const dp=page.waitForEvent('download');await page.locator('#export').click();await(await dp).saveAs(path.join(scratch,'progress.json'));
 page.on('dialog',d=>d.accept());await page.locator('#reset').click();assert.equal(await page.locator('#learned').textContent(),'0');
-await page.locator('#file').setInputFiles(path.join(scratch,'progress.json'));await page.waitForFunction(()=>document.querySelector('#learned').textContent==='8');
-await page.locator('#study-tab').click();await page.locator('#filter').selectOption('all');assert.match(await page.locator('#position').textContent(),/回忆词义/);await page.locator('#shuffle').click();
+await page.locator('#file').setInputFiles(path.join(scratch,'progress.json'));await page.waitForFunction(()=>document.querySelector('#learned').textContent==='1');
+await page.locator('#list-tab').click();await page.locator('#search').fill('coffee');assert.equal(await page.locator('.word').count(),1);
+await page.locator('#study-tab').click();await page.locator('#filter').selectOption('all');await page.locator('#shuffle').click();
 await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
 const blocked=await browser.newContext();await blocked.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw Error('blocked')}})});const p=await blocked.newPage();await p.goto(url);assert.match(await p.locator('#notice').textContent(),/无法读取/);await p.locator('#start').click();assert.match(await p.locator('#notice').textContent(),/未允许/);
-assert.deepEqual(errors,[]);await browser.close();console.log('PASS: offline learning → delayed meaning recall → cloze, wrong-answer requeue, intermediate persistence, full completion, filters, search, export/import, reset, shuffle, narrow layout, storage denied');
+assert.deepEqual(errors,[]);await browser.close();console.log('Input recall flow and existing browser storage/offline/layout paths');
 })().catch(e=>{console.error(e);process.exit(1)});

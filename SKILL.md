@@ -1,6 +1,6 @@
 ---
 name: juyouci
-description: 剧有词，追剧学英语。用户给美剧剧名与集数或英文字幕，提取实用词汇，直接交付一个独立 HTML 学习文件；先学词，再回忆词义和英文，自动重练。用于“剧有词”“追剧学英语”“series vocab”等请求。
+description: 剧有词，追剧学英语。用户给美剧剧名与集数或英文字幕，提取实用词汇，直接交付一个独立 HTML 学习文件；先学词，再凭中文提示输入英文，自动判对错并重练。用于“剧有词”“追剧学英语”“series vocab”等请求。
 ---
 
 # 剧有词
@@ -25,7 +25,7 @@ description: 剧有词，追剧学英语。用户给美剧剧名与集数或英�
 {"title":"剧名 S01E01","deck_id":"show:S01E01:zh","sources":["真实来源 URL 或用户字幕文件名"],"cards":[{"term":"figure out","meaning":"弄明白","ipa":"/ˈfɪɡjər aʊt/","sentence":"We can figure out the schedule.","translation":"我们可以把时间安排弄清楚。"}]}
 ```
 
-`deck_id` 每集唯一且稳定。词条默认按 term 在原句里定位并高亮/挖空；词形变化或短语被拆开时，补 `"targets":["figured out"]` 或 `"targets":["figure","out"]`，必须逐字对应原句，不改变原句来迁就词条。更多格式细节仅在需要时读 references/data-format.md。
+`deck_id` 每集唯一且稳定。词条默认按 term 在原句里定位并高亮/挖空；词形变化或短语被拆开时，补 `"targets":["figured out"]` 或 `"targets":["figure","out"]`，必须逐字对应原句，不改变原句来迁就词条。`targets` 控制原句高亮/挖空；可另填 `answers`（字符串数组）接纳合法答案变体；未填时以 `term` 作为唯一标准答案。更多格式细节仅在需要时读 references/data-format.md。
 
 用此技能自带脚本和模板，不另写网页。将 `<skill-dir>` 替换为实际技能目录，执行一次：
 
@@ -39,6 +39,6 @@ python3 <skill-dir>/scripts/build_html.py <temporary.json> <output-dir>/vocab-sh
 
 回复：“已生成 N 个词条：[下载《剧名》S01E01 学习页](文件绝对路径)。”必要时补一句材料不足说明。不要自动打开网页；不额外交付 JSON、笔记、CSV、截图、压缩包或长篇使用说明。
 
-网页内已有学习、回忆词义、英文挖空、自评、错词间隔重练、词表搜索和进度备份。两个回忆环节通过后记作“本轮记住”，不是长期掌握或间隔重复算法；换浏览器或移动文件时使用页面内备份功能。基础学习离线可用，设备朗读不保证可用。
+网页先呈现词头、音标、释义和高亮台词；随后只显示中文提示与目标词挖空，用户输入英文后自动比对。答对记为“本轮答对”，答错自动排到最多三张后重练；这不是长期掌握或跨日间隔重复算法；换浏览器或移动文件时使用页面内备份功能。基础学习离线可用，设备朗读不保证可用。
 
 仅精选例句进入输出，不分发整集字幕。基于 https://github.com/pyang5166/gbro-series-vocab 改编，保留 LICENSE。

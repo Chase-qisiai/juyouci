@@ -27,6 +27,10 @@ def validate(data):
             if not isinstance(card.get(field), str) or not card[field].strip():
                 raise ValueError(f'第 {i} 项缺少非空 {field}')
         row = {k: card[k].strip() for k in FIELDS}
+        answers = card.get('answers', [row['term']])
+        if not isinstance(answers, list) or not answers or any(not isinstance(a, str) or not a.strip() for a in answers):
+            raise ValueError(f'第 {i} 项 answers 必须是非空字符串数组')
+        row['answers'] = list(dict.fromkeys(a.strip() for a in answers))
         targets = card.get('targets', [row['term']])
         if not isinstance(targets, list) or not targets or any(not isinstance(t, str) or not t.strip() for t in targets):
             raise ValueError(f'第 {i} 项 targets 必须是非空字符串数组')

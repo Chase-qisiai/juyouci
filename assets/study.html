@@ -3,55 +3,286 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>剧有词 · 学习卡</title>
 <style>
 :root{--bg:#f4f3ed;--ink:#213e39;--muted:#687772;--line:#d8dfd6;--green:#235a47;--soft:#e5ecdf}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1080px;margin:auto;padding:38px 28px 64px}header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:24px}.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(26px,4vw,40px);letter-spacing:-1px;margin:6px 0}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}.badge{border:1px solid var(--line);border-radius:30px;padding:6px 13px;font-size:12px;white-space:nowrap}.stats{display:flex;gap:28px;margin:24px 0}.stats strong{font-size:28px;margin-right:8px}nav,.toolbar,.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}button,select,input{font:inherit}button,select{border:1px solid var(--line);background:#fff;color:var(--ink);padding:10px 16px;border-radius:10px;cursor:pointer}button:hover{background:var(--soft)}button:disabled{opacity:.4;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d99945;outline-offset:3px}.primary,button[aria-pressed=true]{background:var(--green);color:white;border-color:var(--green)}.toolbar{justify-content:space-between;margin:22px 0 16px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px 40px;min-height:370px;box-shadow:0 12px 35px #213e3906}.sentence{font-family:Georgia,serif;font-size:clamp(25px,4vw,36px);line-height:1.5;margin:28px 0;color:#193e33}.answer{border-top:1px solid var(--line);margin:22px 0;padding-top:18px}.term{font-size:22px;font-weight:650}.ipa{font-size:16px;color:var(--muted);font-weight:400;margin-left:12px}.actions{margin-top:24px}.bottom{justify-content:space-between;margin-top:18px;display:flex;gap:12px;align-items:center}.hint{font-size:12px;color:var(--muted)}input[type=search]{width:100%;padding:14px 18px;border:1px solid var(--line);border-radius:10px;background:white;margin:22px 0}.word{background:white;border:1px solid var(--line);border-radius:12px;padding:20px 24px;margin-bottom:12px}.word-top{display:flex;justify-content:space-between;gap:12px}.word p{overflow-wrap:anywhere}.word .example{font-family:Georgia,serif;font-size:20px}footer{margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}footer .actions{margin-top:12px}#notice{min-height:24px;color:#855220;font-size:14px}#source-list{overflow-wrap:anywhere}a{color:var(--green)}[hidden]{display:none!important}@media(max-width:620px){main{padding:24px 16px}header{display:block}.badge{display:inline-block;margin-top:10px}.card{padding:22px;min-height:360px}.stats{gap:18px}.stats strong{font-size:23px}.bottom{align-items:flex-start;flex-direction:column}.actions button{flex:1}.word{padding:16px}}
+.word-target{font-size:clamp(28px,4vw,38px);line-height:1.25;margin:10px 0 4px;overflow-wrap:anywhere}.target-label{font-size:13px;color:var(--muted);letter-spacing:.04em}.recall-prompt{font-size:18px;line-height:1.5;margin:12px 0}.sentence mark{background:#e3edb9;color:inherit;border-radius:4px;padding:0 3px}.sentence mark.blank{background:#f2e5c8;letter-spacing:.08em}.answer-input{width:min(100%,540px);min-height:52px;padding:12px 16px;border:1px solid #9aaea2;border-radius:10px;background:white;color:var(--ink);font-size:18px}.answer-input[disabled]{background:#f4f3ed}.feedback{min-height:30px;margin-top:12px;font-weight:600}.feedback.good{color:#235a47}.feedback.retry{color:#8b4b17}.actions button{min-height:44px}@media(max-width:620px){.word-target{font-size:30px}.recall-prompt{font-size:16px}.answer-input{font-size:16px}}
 mark{background:#e3edb9;color:inherit;border-radius:4px;padding:0 3px}.target{font:600 32px/1.4 Georgia,serif;margin:16px 0}.sentence{overflow-wrap:anywhere}
 </style></head>
 <body><main>
 <header><div><div class="eyebrow">JUYOUCI / 剧有词</div><h1 id="title"></h1><p class="muted">看一集，学几句。</p></div><span class="badge">独立 HTML · 随时学习</span></header>
-<div class="stats" aria-label="学习统计"><div><strong id="total">0</strong>词条</div><div><strong id="learned">0</strong>本轮记住</div><div><strong id="remaining">0</strong>待完成</div></div>
+<div class="stats" aria-label="学习统计"><div><strong id="total">0</strong>词条</div><div><strong id="learned">0</strong>本轮答对</div><div><strong id="remaining">0</strong>待练习</div></div>
 <nav aria-label="页面模式"><button id="study-tab" aria-pressed="true">学习与回忆</button><button id="list-tab" aria-pressed="false">词汇总览</button></nav>
 <section id="study"><div class="toolbar"><label>练习范围 <select id="filter"><option value="unlearned">继续学习</option><option value="again">需要再练</option><option value="all">全部复习</option></select></label><button id="shuffle">打乱顺序</button></div>
-<div class="card"><div class="eyebrow" id="position"></div><h2 class="target" id="target"></h2><p class="muted" id="prompt"></p><p class="sentence" id="sentence"></p><div class="answer" id="answer"><div><span class="term" id="term"></span><span class="ipa" id="ipa"></span></div><p id="meaning"></p><p id="translation"></p></div><div class="actions"><button class="primary" id="start">学过了，稍后考我</button><button class="primary" id="reveal" hidden>核对答案</button><button id="speak">朗读原句</button></div><div class="actions" id="ratings" hidden><button id="again">没想起来</button><button class="primary" id="known">想起来了</button></div></div>
-<p class="hint">先学词 → 回忆词义 → 回想英文。请先在心里作答，再核对答案；答错会自动排回队列。间隔最多 3 张，不足时提前出现。</p></section>
+<div class="card"><div class="eyebrow" id="position"></div><div id="learn-panel"><div class="target-label">本次要学</div><h2 class="word-target" id="target"></h2><span class="ipa" id="ipa"></span><p class="muted" id="meaning"></p></div><p class="recall-prompt" id="prompt"></p><p class="sentence" id="sentence"></p><p id="translation"></p><div class="actions" id="learn-actions"><button class="primary" id="start">学好了，加入练习</button><button id="speak">朗读原句</button></div><div id="recall-panel" hidden><label class="target-label" for="answer-input" id="answer-label">输入英文词或短语</label><div class="actions"><input id="answer-input" class="answer-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="feedback"><button class="primary" id="check">检查答案</button><button id="give-up">想不起来</button></div><p id="feedback" class="feedback" role="status" aria-live="polite"></p><button id="continue" hidden>继续下一词 →</button></div></div>
+<p class="hint">先看词义和原句，隔几张后根据中文提示输入英文。答错会自动排回队列。</p></section>
 <section id="list" hidden><input id="search" type="search" aria-label="搜索词汇" placeholder="搜索词汇、释义或台词…"><p class="muted" id="results"></p><div id="words"></div></section>
 <footer><div id="notice" role="status" aria-live="polite"></div><p class="hint">进度保存在当前浏览器。换浏览器、移动文件或清理数据前，请导出备份。朗读使用设备语音，声音及离线可用性取决于浏览器。</p><div class="actions"><button id="export">导出进度</button><button id="import">导入进度</button><button id="reset">重置进度</button><input type="file" id="file" accept="application/json,.json" hidden></div><p class="muted" id="note"></p><details><summary class="hint">内容来源</summary><div id="source-list"></div></details></footer>
 </main><script type="application/json" id="vocab-data">__VOCAB_DATA__</script><script>
 'use strict';
-const D=JSON.parse(document.getElementById('vocab-data').textContent), $=id=>document.getElementById(id);
-const key='series-vocab:v1:'+D.deck_id, ids=new Set(D.cards.map(c=>c.id));
-let progress={}, queue=[],revealed=false,mode='study';
-const cardById=new Map(D.cards.map(c=>[c.id,c]));
-function notify(s){$('notice').textContent=s;}
-function cleanProgress(p){if(!p||typeof p!=='object'||Array.isArray(p))throw Error('进度格式不正确');const out={};for(const [id,v] of Object.entries(p)){if(!ids.has(id))continue;if(!['known','again','studied','meaning'].includes(v))throw Error('进度状态不正确');out[id]=v;}return out;}
-try{const saved=localStorage.getItem(key);if(saved)progress=cleanProgress(JSON.parse(saved));}catch(e){notify('无法读取本地进度；本次仍可学习，请使用导出进度保存。');}
-function save(){try{localStorage.setItem(key,JSON.stringify(progress));}catch(e){notify('浏览器未允许保存进度，请点击“导出进度”备份。');}}
-function stats(){$('total').textContent=D.cards.length;const n=D.cards.filter(c=>progress[c.id]==='known').length;$('learned').textContent=n;$('remaining').textContent=D.cards.length-n;}
-function current(){return queue.length?cardById.get(queue[0].id):null;}
-function rebuild(){queue=D.cards.filter(c=>$('filter').value==='all'||($('filter').value==='again'?progress[c.id]==='again':progress[c.id]!=='known')).map(c=>({id:c.id,phase:!progress[c.id]?'learn':progress[c.id]==='meaning'?'cloze':'meaning'}));render();}
-function sentence(c,blank){$('sentence').replaceChildren();let at=0;for(const [start,end] of c.target_spans){$('sentence').append(document.createTextNode(c.sentence.slice(at,start)));const m=document.createElement('mark');m.textContent=blank?'________':c.sentence.slice(start,end);$('sentence').append(m);at=end;}$('sentence').append(document.createTextNode(c.sentence.slice(at)));}
-function render(){stats();revealed=false;$('ratings').hidden=true;const c=current();const phase=queue[0]?.phase;
-for(const id of ['start','reveal','speak'])$(id).hidden=!c;
-$('answer').hidden=!c||phase!=='learn';$('target').hidden=!c;
-if(!c){$('position').textContent='本组练习完成';$('sentence').textContent='休息一下吧。之后可以选择“全部复习”再练。';$('prompt').textContent='本轮记住不等于长期掌握，建议过几天再回来复习。';return;}
-$('position').textContent=({learn:'01 · 学习新词',meaning:'02 · 回忆词义',cloze:'03 · 回想英文'})[phase]+` · 队列剩余 ${queue.length} 项`;
-$('target').textContent=phase==='cloze'?c.meaning:c.term;
-$('prompt').textContent=phase==='learn'?'看词义，再结合原句理解。准备好后，稍后会考你。':phase==='meaning'?'标出的词或短语在这句话中是什么意思？':'根据中文意思，回想空格处的英文（按原句形式）。';
-sentence(c,phase==='cloze');
-for(const f of ['term','ipa','meaning','translation'])$(f).textContent=c[f];
-$('start').hidden=phase!=='learn';$('reveal').hidden=phase==='learn';$('reveal').textContent='核对答案';$('speak').hidden=phase==='cloze';}
-function reveal(){const c=current();if(!c||queue[0].phase==='learn')return;revealed=true;$('answer').hidden=false;$('ratings').hidden=false;$('reveal').hidden=true;$('speak').hidden=false;if(queue[0].phase==='cloze')sentence(c,false);}
-function enqueue(task){queue.splice(Math.min(3,queue.length),0,task);}
-function stopVoice(){if('speechSynthesis'in window)speechSynthesis.cancel();}
-function study(){if(queue[0]?.phase!=='learn')return;stopVoice();const task=queue.shift();progress[task.id]='studied';enqueue({id:task.id,phase:'meaning'});save();render();}
-function rate(value){if(!revealed||!current())return;stopVoice();const task=queue.shift();if(value==='again'){progress[task.id]='again';enqueue({id:task.id,phase:'meaning'});}else if(task.phase==='meaning'){progress[task.id]='meaning';enqueue({id:task.id,phase:'cloze'});}else{progress[task.id]='known';}save();render();}
-function list(){const q=$('search').value.trim().toLocaleLowerCase();const rows=D.cards.filter(c=>[c.term,c.meaning,c.sentence,c.translation].join(' ').toLocaleLowerCase().includes(q));$('results').textContent=`找到 ${rows.length} 个词条`;$('words').replaceChildren();for(const c of rows){const el=document.createElement('article');el.className='word';const top=document.createElement('div');top.className='word-top';const term=document.createElement('strong');term.textContent=c.term;const status=document.createElement('span');status.className='hint';status.textContent=progress[c.id]==='known'?'本轮记住':progress[c.id]==='again'?'需要再练':progress[c.id]?'练习中':'未学习';top.append(term,status);el.append(top);for(const [txt,cls]of [[c.ipa,'muted'],[c.meaning,''],[c.sentence,'example'],[c.translation,'muted']]){const p=document.createElement('p');p.textContent=txt;p.className=cls;el.append(p);}$('words').append(el);}}
-function switchMode(m){mode=m;$('study').hidden=m!=='study';$('list').hidden=m!=='list';$('study-tab').setAttribute('aria-pressed',m==='study');$('list-tab').setAttribute('aria-pressed',m==='list');if(m==='list')list();}
-$('title').textContent=D.title;document.title=D.title+' · 剧有词';$('note').textContent=D.note;
-for(const s of D.sources){const p=document.createElement('p');if(/^https?:\/\//i.test(s)){const a=document.createElement('a');a.href=s;a.textContent=s;a.target='_blank';a.rel='noopener noreferrer';p.append(a);}else p.textContent=s;$('source-list').append(p);}
-$('study-tab').onclick=()=>switchMode('study');$('list-tab').onclick=()=>switchMode('list');$('search').oninput=list;$('filter').onchange=rebuild;$('reveal').onclick=reveal;$('start').onclick=study;$('known').onclick=()=>rate('known');$('again').onclick=()=>rate('again');
-$('shuffle').onclick=()=>{for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}render();};
-$('speak').onclick=()=>{if(!('speechSynthesis'in window)){notify('当前浏览器不支持朗读，翻卡和复习仍可使用。');return;}const c=current();if(!c)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(c.sentence);u.lang='en-US';u.rate=.85;u.onerror=()=>notify('朗读暂不可用，请检查设备语音或网络。');speechSynthesis.speak(u);};
-$('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:1,deck_id:D.deck_id,progress},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='vocab-progress.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);notify('已导出学习进度。');};
-$('import').onclick=()=>$('file').click();$('file').onchange=async()=>{const f=$('file').files[0];if(!f)return;try{if(f.size>2000000)throw Error('文件过大');const obj=JSON.parse(await f.text());if(obj.version!==1||obj.deck_id!==D.deck_id)throw Error('这份进度不属于当前词汇页');const p=cleanProgress(obj.progress);if(!confirm('导入会替换当前学习进度，继续吗？'))return;progress=p;save();rebuild();list();notify('进度已导入。');}catch(e){notify('导入失败：'+e.message);}finally{$('file').value='';}};
-$('reset').onclick=()=>{if(!confirm('确定清除这一集的学习进度吗？'))return;progress={};save();rebuild();list();notify('已重置本集进度。');};
+const D = JSON.parse(document.getElementById('vocab-data').textContent);
+const $ = id => document.getElementById(id);
+const key = 'series-vocab:v2:' + D.deck_id;
+const legacyKey = 'series-vocab:v1:' + D.deck_id;
+const cardById = new Map(D.cards.map(c => [c.id, c]));
+const ids = new Set(cardById.keys());
+let progress = {}, queue = [], checked = false, mode = 'study';
+
+function notify(message) { $('notice').textContent = message; }
+function cleanProgress(value, migrateLegacy = false) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('进度格式不正确');
+  const clean = {};
+  for (const [id, state] of Object.entries(value)) {
+    if (!ids.has(id)) continue;
+    // meaning is accepted for progress exported by the previous two-stage version.
+    if (!['known', 'again', 'studied', 'meaning'].includes(state)) throw Error('进度状态不正确');
+    // Old "known" came from self-rating; ask the learner to retrieve it once by typing.
+    clean[id] = migrateLegacy && state === 'known' ? 'studied' : state;
+  }
+  return clean;
+}
+try {
+  const saved = localStorage.getItem(key);
+  const legacy = saved ? null : localStorage.getItem(legacyKey);
+  if (saved) progress = cleanProgress(JSON.parse(saved));
+  else if (legacy) { progress = cleanProgress(JSON.parse(legacy), true); save(); }
+} catch (_) { notify('无法读取本地进度；这次仍可学习，请用“导出进度”保存。'); }
+function save() {
+  try { localStorage.setItem(key, JSON.stringify(progress)); }
+  catch (_) { notify('浏览器未允许保存进度；请用“导出进度”备份。'); }
+}
+function updateStats() {
+  $('total').textContent = D.cards.length;
+  $('learned').textContent = D.cards.filter(c => progress[c.id] === 'known').length;
+  $('remaining').textContent = D.cards.filter(c => progress[c.id] !== 'known').length;
+}
+function currentTask() { return queue[0] || null; }
+function currentCard() { return queue.length ? cardById.get(queue[0].id) : null; }
+function enqueueAfterThree(task) {
+  // The active task is still at queue[0]. Insert after it and up to three intervening cards.
+  queue.splice(Math.min(4, queue.length), 0, task);
+}
+function sentence(card, blank) {
+  const host = $('sentence');
+  host.replaceChildren();
+  let offset = 0;
+  for (const [start, end] of card.target_spans) {
+    host.append(document.createTextNode(card.sentence.slice(offset, start)));
+    const mark = document.createElement('mark');
+    if (blank) mark.className = 'blank';
+    mark.textContent = blank ? '________' : card.sentence.slice(start, end);
+    host.append(mark);
+    offset = end;
+  }
+  host.append(document.createTextNode(card.sentence.slice(offset)));
+}
+function render() {
+  updateStats();
+  checked = false;
+  const task = currentTask(), card = currentCard();
+  const learning = !!task && task.phase === 'learn';
+  $('learn-panel').hidden = !learning;
+  $('learn-actions').hidden = !learning;
+  $('recall-panel').hidden = !task || learning;
+  $('translation').hidden = !learning;
+  $('start').disabled = !task;
+  $('speak').disabled = !task;
+  $('speak').hidden = !learning;
+  if (!task || !card) {
+    $('position').textContent = '这一组完成了';
+    $('target').textContent = '';
+    $('prompt').textContent = '歇一会儿吧。之后可以选择“全部复习”再练。';
+    $('sentence').textContent = '所有词条都完成了本轮练习。';
+    $('translation').textContent = '';
+    $('learn-panel').hidden = true;
+    $('learn-actions').hidden = true;
+    $('recall-panel').hidden = true;
+    return;
+  }
+  $('position').textContent = learning
+    ? `学习新词 · 队列 ${queue.length}`
+    : `输入回忆 · 队列 ${queue.length}`;
+  $('target').textContent = card.term;
+  $('ipa').textContent = card.ipa;
+  $('meaning').textContent = card.meaning;
+  $('translation').textContent = card.translation;
+  if (learning) {
+    $('prompt').textContent = '读一读词义和台词，注意标出的表达。';
+    sentence(card, false);
+  } else {
+    $('prompt').textContent = card.meaning;
+    $('answer-input').value = '';
+    $('answer-input').disabled = false;
+    $('check').hidden = false;
+    $('check').disabled = false;
+    $('continue').hidden = true;
+    $('feedback').textContent = '';
+    $('feedback').className = 'feedback';
+    $('answer-label').textContent = '根据中文提示，输入英文词或短语';
+    sentence(card, true);
+    $('speak').hidden = true;
+    requestAnimationFrame(() => $('answer-input').focus({ preventScroll: true }));
+  }
+}
+function normalizeAnswer(value) {
+  return value.normalize('NFKC').toLocaleLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/[\p{P}\p{S}]/gu, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function checkAnswer() {
+  const task = currentTask(), card = currentCard();
+  if (!task || task.phase !== 'recall' || checked) return;
+  const response = normalizeAnswer($('answer-input').value);
+  if (!response) {
+    $('feedback').textContent = '先输入一个答案，或点击“想不起来”看答案。';
+    $('feedback').className = 'feedback retry';
+    $('answer-input').focus();
+    return;
+  }
+  const accepted = card.answers.map(normalizeAnswer);
+  const correct = accepted.includes(response);
+  checked = true;
+  $('answer-input').disabled = true;
+  $('check').hidden = true;
+  $('continue').hidden = false;
+  if (correct) {
+    progress[task.id] = 'known';
+    $('feedback').textContent = '答对了：' + card.term;
+    $('feedback').className = 'feedback good';
+  } else {
+    progress[task.id] = 'again';
+    $('feedback').textContent = `这次没想起来。答案：${card.term}`;
+    $('feedback').className = 'feedback retry';
+    enqueueAfterThree({ id: task.id, phase: 'recall' });
+  }
+  save();
+  updateStats();
+}
+function revealRetry() {
+  if (checked || !currentTask()) return;
+  $('answer-input').value = '';
+  checkAnswerWithBlank();
+}
+function checkAnswerWithBlank() {
+  const task = currentTask(), card = currentCard();
+  if (!task || task.phase !== 'recall' || checked) return;
+  checked = true;
+  progress[task.id] = 'again';
+  $('answer-input').disabled = true;
+  $('check').hidden = true;
+  $('continue').hidden = false;
+  $('feedback').textContent = `答案：${card.term}`;
+  $('feedback').className = 'feedback retry';
+  enqueueAfterThree({ id: task.id, phase: 'recall' });
+  save();
+  updateStats();
+}
+function continueNext() {
+  if (!checked || !currentTask()) return;
+  queue.shift();
+  render();
+}
+function studyCurrent() {
+  if (currentTask()?.phase !== 'learn') return;
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  const task = queue.shift();
+  progress[task.id] = 'studied';
+  queue.splice(Math.min(3, queue.length), 0, { id: task.id, phase: 'recall' });
+  save();
+  render();
+}
+function rebuild() {
+  const filter = $('filter').value;
+  queue = D.cards.filter(card => {
+    const state = progress[card.id];
+    if (filter === 'again') return state === 'again';
+    if (filter === 'unlearned') return state !== 'known';
+    return true;
+  }).map(card => ({
+    id: card.id,
+    phase: ['studied', 'again', 'meaning', 'known'].includes(progress[card.id]) ? 'recall' : 'learn',
+  }));
+  render();
+}
+function list() {
+  const query = $('search').value.trim().toLocaleLowerCase();
+  const rows = D.cards.filter(card => [card.term, card.meaning, card.sentence, card.translation].join(' ').toLocaleLowerCase().includes(query));
+  $('results').textContent = `找到 ${rows.length} 个词条`;
+  $('words').replaceChildren();
+  for (const card of rows) {
+    const article = document.createElement('article'); article.className = 'word';
+    const top = document.createElement('div'); top.className = 'word-top';
+    const term = document.createElement('strong'); term.textContent = card.term;
+    const status = document.createElement('span'); status.className = 'hint';
+    status.textContent = progress[card.id] === 'known' ? '本轮答对' : progress[card.id] === 'again' ? '需要重练' : progress[card.id] ? '练习中' : '未学习';
+    top.append(term, status); article.append(top);
+    for (const [content, className] of [[card.ipa, 'muted'], [card.meaning, ''], [card.sentence, 'example'], [card.translation, 'muted']]) {
+      const p = document.createElement('p'); p.textContent = content; p.className = className; article.append(p);
+    }
+    $('words').append(article);
+  }
+}
+function switchMode(nextMode) {
+  mode = nextMode;
+  $('study').hidden = mode !== 'study'; $('list').hidden = mode !== 'list';
+  $('study-tab').setAttribute('aria-pressed', mode === 'study');
+  $('list-tab').setAttribute('aria-pressed', mode === 'list');
+  if (mode === 'list') list();
+}
+$('title').textContent = D.title;
+document.title = D.title + ' · 剧有词';
+$('note').textContent = D.note;
+for (const source of D.sources) {
+  const p = document.createElement('p');
+  if (/^https?:\/\//i.test(source)) {
+    const a = document.createElement('a'); a.href = source; a.textContent = source; a.target = '_blank'; a.rel = 'noopener noreferrer'; p.append(a);
+  } else p.textContent = source;
+  $('source-list').append(p);
+}
+$('study-tab').onclick = () => switchMode('study');
+$('list-tab').onclick = () => switchMode('list');
+$('search').oninput = list;
+$('filter').onchange = rebuild;
+$('shuffle').onclick = () => {
+  for (let i = queue.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [queue[i], queue[j]] = [queue[j], queue[i]]; }
+  render();
+};
+$('start').onclick = studyCurrent;
+$('check').onclick = checkAnswer;
+$('give-up').onclick = revealRetry;
+$('answer-input').oninput = () => { $('feedback').textContent = ''; $('feedback').className = 'feedback'; };
+$('answer-input').onkeydown = event => {
+  if (event.key !== 'Enter') return;
+  event.preventDefault();
+  if (checked) continueNext(); else checkAnswer();
+};
+$('continue').onclick = continueNext;
+$('speak').onclick = () => {
+  if (!('speechSynthesis' in window)) { notify('当前浏览器不支持朗读，学习和输入练习仍可使用。'); return; }
+  const card = currentCard(); if (!card) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(card.sentence); utterance.lang = 'en-US'; utterance.rate = .85;
+  utterance.onerror = () => notify('朗读暂不可用，请检查设备语音或网络。'); speechSynthesis.speak(utterance);
+};
+$('export').onclick = () => {
+  const blob = new Blob([JSON.stringify({ version: 2, deck_id: D.deck_id, progress }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob), link = document.createElement('a'); link.href = url; link.download = 'vocab-progress.json'; link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000); notify('已导出学习进度。');
+};
+$('import').onclick = () => $('file').click();
+$('file').onchange = async () => {
+  const file = $('file').files[0]; if (!file) return;
+  try {
+    if (file.size > 2000000) throw Error('文件过大');
+    const data = JSON.parse(await file.text());
+    if (![1, 2].includes(data.version) || data.deck_id !== D.deck_id) throw Error('这份进度不属于当前词汇页');
+    const restored = cleanProgress(data.progress, data.version === 1);
+    if (!confirm('导入会替换当前学习进度，继续吗？')) return;
+    progress = restored; save(); rebuild(); list(); notify('进度已导入。');
+  } catch (error) { notify('导入失败：' + error.message); }
+  finally { $('file').value = ''; }
+};
+$('reset').onclick = () => {
+  if (!confirm('确定清除这一集的学习进度吗？')) return;
+  progress = {}; save(); rebuild(); list(); notify('已重置本集进度。');
+};
 rebuild();
 </script></body></html>
