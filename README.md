@@ -1,71 +1,108 @@
+<div align="center">
+
 # 剧有词
 
-**看一集，学几句。**
+### 看一集，学几句。
 
-给出剧名 + 集数，AI 从实际字幕中挑选实用词汇，生成一个可直接打开的 HTML 学习页。无需 Anki，无需注册，无需启动服务器。
+给出美剧剧名和集数，生成一份可以直接打开的英语词汇学习页。
 
-基于 [pyang5166/gbro-series-vocab](https://github.com/pyang5166/gbro-series-vocab) 改编。原版输出 Anki CSV 和 Markdown，本版将主要交付改为交互式 HTML。沿用 MIT 许可证，保留原作者 狗哥笔记 的版权声明。
+[下载体验页](https://github.com/Chase-qisiai/juyouci/raw/refs/heads/main/examples/demo.html) · [安装到 Codex](#安装到-codex) · [使用方法](#使用)
 
-## 能做什么
+![MIT License](https://img.shields.io/github/license/Chase-qisiai/juyouci?style=flat-square)
+![独立 HTML](https://img.shields.io/badge/output-standalone%20HTML-235a47?style=flat-square)
+![无需 Anki](https://img.shields.io/badge/Anki-not%20required-687772?style=flat-square)
 
-- **先学词**：明确展示目标词、音标、释义，以及高亮原句和译文。
-- **输入回忆**：隐藏目标词，只显示中文提示和挖空台词；用户输入英文，页面自动检查拼写和常见变体。
-- **错词自动重练**：答错会自动排在最多 3 张之后再次出现；答对记为“本轮答对”。
-- 词表搜索、打乱顺序、保存练习进度、JSON 备份，适配手机与电脑。
-- 设备支持时可朗读英文；英文挖空未揭晓前隐藏朗读，避免直接泄露答案。
+</div>
 
-这是单次学习队列，目前没有跨日间隔重复排程；“本轮答对”也不代表长期掌握。核心功能离线可用，设备朗读是否可用取决于浏览器和语音。
+**剧有词**从指定剧集的真实字幕中挑选实用表达，生成独立 HTML。学习时先看词义和台词，再根据中文提示输入英文；答错的词会自动排回队列。
 
-## 更短的生成流程
+> 示例页使用 8 个原创句子演示功能，不来自任何剧集。
 
-给剧名和集数 → 获取一份可靠字幕 → 一次整理词条 → 直接交付一个 HTML。
+## 学习流程
 
-默认 50 条、中文、当前任务输出目录，不为默认配置反复提问。已有字幕直接使用；找到有效来源就停止，失败请求不原样重试。日常生成只运行轻量脚本校验，不自动打开网页、启动服务器、截图、安装浏览器测试工具，也不额外交付笔记或 CSV。没有对网络速度或总生成时长作保证。
+```mermaid
+flowchart LR
+    A[剧名 + 集数] --> B[找到并核实字幕]
+    B --> C[筛选实用词汇与原句]
+    C --> D[生成独立 HTML]
+    D --> E[看词义和台词]
+    E --> F[中文提示下输入英文]
+    F -->|答对| G[继续下一词]
+    F -->|答错| H[隔几张自动重练]
+    H --> F
+```
+
+每条词汇卡包括目标词、音标、语境释义、原句和译文。练习时目标词会从原句中挖空，网页自动检查输入答案。可接受的拼写或表达变体可以由生成内容明确列出。
 
 ## 安装到 Codex
 
+macOS / Linux 上执行：
+
 ```bash
-git clone https://github.com/Chase-qisiai/juyouci.git ~/.codex/skills/juyouci
+git clone --depth 1 https://github.com/Chase-qisiai/juyouci.git ~/.codex/skills/juyouci
 ```
 
-如果目标目录已存在，请先备份或合并，避免覆盖自己的配置。安装后新开一个 Codex 任务使用：
+如果已安装，进入技能目录执行 `git pull` 更新。安装后在新任务里这样使用：
 
 ```text
-使用 $juyouci，帮我生成 Breaking Bad S02E03 的 HTML 词汇学习页。
+使用 $juyouci，为我生成 The Pitt S01E01 的 HTML 词汇学习页。
 ```
 
-也可以直接提供英文字幕或剧本文字。AI 负责核实来源、筛词及翻译，生成脚本负责可靠地制作学习页。默认目标 50 条；字幕不足时如实交付实际数量。
+也可以直接把字幕或剧本文字提供给 Agent。其他支持 Skills 的 Agent，将整个仓库放入它的个人 Skills 目录即可。
 
-## 先体验
+## 使用
 
-下载 [demo.html](examples/demo.html)，用浏览器打开。示例中的 8 句英文均为原创演示句，不是真实剧集台词。
+默认生成 50 条中文词汇，直接交付一个 HTML 文件。字幕材料不足时会按实际内容生成，不凑数量。已有字幕会直接使用；拿到一份可靠来源后就开始整理，不会为了收集多份来源而延长流程。
 
-进度保存在当前浏览器；移动文件、更换浏览器或清理浏览器数据前，请先点击“导出进度”，再在新位置导入。浏览器禁止本地存储时会提示，仍然可以学习和导出。
+```text
+用剧有词生成《The Pitt》S01E01 学习页，保存到下载文件夹。
+```
+
+双击生成的 HTML 即可学习。网页本身不依赖 Anki、服务器或网络；无需安装 Python。学习进度保存在当前浏览器，换浏览器或移动文件前可以导出备份。设备语音是否可用取决于浏览器。
+
+## 适用范围
+
+- 目前面向英美剧单集词汇学习。
+- 字幕来源和内容必须能核实到指定剧集；找不到可靠字幕时，Agent 会请你提供字幕，不会凭记忆造台词。
+- 只保存精选学习例句，不把整集字幕打包进网页。
+- 网页支持单集练习与错词重练；目前不提供跨天的 FSRS / Anki 式复习排程。
+- “本轮答对”表示这次输入正确，不代表已经长期记住。
 
 ## 手动生成
 
-生成环节需要 Python 3，无需额外 Python 库。学习者只需浏览器。
+需要 Python 3 的标准库来把词汇 JSON 和页面模板合成 HTML；学习者只需浏览器。
 
 ```bash
 python3 scripts/build_html.py examples/demo.json study.html
 ```
 
-输入格式见 [数据格式](references/data-format.md)。HTML 不需要 JSON 文件伴随即可独立运行。
+输入格式见 [references/data-format.md](references/data-format.md)。生成后的 HTML 不需要 JSON 或其他文件伴随。
 
-## 测试
+## 项目结构
+
+| 路径 | 用途 |
+|---|---|
+| `SKILL.md` | Agent 的触发条件与生成流程 |
+| `assets/study.html` | 单文件学习页模板 |
+| `scripts/build_html.py` | 校验词条并生成独立 HTML |
+| `references/` | 字幕来源与词条格式说明 |
+| `examples/demo.html` | 可直接打开的原创示例 |
+
+## 维护者验证
+
+模板或生成器改动时，可以运行：
 
 ```bash
 python3 -m unittest discover -s tests -p 'test_*.py'
-npm install
-npm test
+npm install && npm test
 ```
 
-这些测试仅在开发或修改模板时运行，普通用户生成学习页无需安装 Node.js 或 Playwright。
+浏览器交互测试使用本机 Chrome 和 Playwright。最近一次输入判题流程更新尚未重新运行完整测试；之前的测试结果不代表当前版本已通过。设备语音也没有做听感验证。
 
-浏览器测试使用本机 Chrome（Playwright channel `chrome`），覆盖离线加载、先学后输入回忆、判题、错词重练、进度恢复、筛选、搜索、导出/导入、重置、打乱、窄屏及禁止存储。生成器测试覆盖数据校验、标准答案和别名、稳定 ID、脚本注入转义、词形匹配、单词边界及 UTF-16 位置。
+## 来源与许可
 
-2026-09-24：旧版的 9 项生成器测试和 Chrome 浏览器交互测试曾通过；本次输入判题更新尚未复测。设备语音未做听感验证。旧 HTML 是独立文件，不会自动获得新流程；需要重新生成。旧版自评为“本轮记住”的词会转回待输入回忆，旧版导出的进度文件仍可导入。
+本项目由 [pyang5166/gbro-series-vocab](https://github.com/pyang5166/gbro-series-vocab) 改编，将 Anki/Markdown 交付改为独立 HTML 学习页。保留上游 MIT 许可和原作者 狗哥笔记 的版权声明。TypeWords 的练习设计仅作参考，本仓库没有复制其 GPL-3.0 源代码。
 
-## 来源与版权
+## English
 
-上游基线：`ed46e8491f6fd8a6f5501b74a5f68b488ecfb9ff`。来源获取参考保留在 `references/subtitle-sources.md`，站点行为可能随时变化，必须核实实际内容。仅输出选中的例句，不随学习页分发整集字幕。
+**Juyouci** turns a TV episode transcript into a self-contained HTML vocabulary practice page. Learners study each target word in context, recall it by typing from a Chinese prompt, and automatically revisit missed words. No Anki, server, or runtime dependency is required to use the generated page.
