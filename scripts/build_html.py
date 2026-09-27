@@ -178,6 +178,9 @@ def build(data, output):
                                          prefix=f'.{output.name}.', suffix='.tmp', delete=False) as temp:
             temp.write(html)
             temp_path = Path(temp.name)
+        # NamedTemporaryFile defaults to owner-only permissions; published HTML should be readable.
+        mode = (output.stat().st_mode & 0o777) if output.exists() else 0o644
+        temp_path.chmod(mode)
         temp_path.replace(output)
     finally:
         if temp_path and temp_path.exists():
