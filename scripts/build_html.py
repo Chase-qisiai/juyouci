@@ -76,6 +76,11 @@ def validate(data):
     return {
         'title': data['title'].strip(),
         'deck_id': data['deck_id'].strip(),
+        'language': str(data.get('language', '')).strip(),
+        'exam_target': str(data.get('exam_target', '')).strip(),
+        'level_target': str(data.get('level_target', '')).strip(),
+        'selection_basis': str(data.get('selection_basis', '')).strip(),
+        'difficulty_feedback': str(data.get('difficulty_feedback', '')).strip(),
         'cards': clean,
         'sources': sources,
         'note': str(data.get('note', '')),

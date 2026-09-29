@@ -36,6 +36,13 @@ class Generator(unittest.TestCase):
    self.assertEqual(len(library['decks']),2)
    self.assertEqual(library['decks'][0]['deck_id'],first['deck_id'])
    self.assertEqual(library['decks'][1]['note'],'已更新')
+ def test_preserves_language_exam_and_difficulty_metadata(self):
+  d=self.data();d.update(language='Japanese', exam_target='JLPT N2', level_target='N2', selection_basis='JLPT N2 高频范围', difficulty_feedback='用户反馈偏难')
+  clean=b.validate(d)
+  self.assertEqual(clean['language'],'Japanese')
+  self.assertEqual(clean['exam_target'],'JLPT N2')
+  self.assertEqual(clean['level_target'],'N2')
+  self.assertEqual(clean['difficulty_feedback'],'用户反馈偏难')
  def test_migrate_legacy_single_deck_html(self):
   d=self.data();d['cards'][0]['sentence']='She figured it out.';d['cards'][0]['targets']=['figured','out']
   normalized=b.validate(d)

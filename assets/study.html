@@ -22,7 +22,7 @@
 <div class="bottom"><span class="hint" id="keyboard-hint">按空格核对答案 · 显示答案后按 1 再练 / 2 想起来了</span></div>
 <p class="hint" id="mode-hint">先学词 → 回忆词义 → 回想英文。请先在心里作答，再核对答案；答错会自动排回队列。</p></section>
 <section id="list" hidden><input id="search" type="search" aria-label="搜索词汇" placeholder="搜索词汇、释义或台词…"><p class="muted" id="results"></p><div id="words"></div></section>
-<footer><div id="notice" role="status" aria-live="polite"></div><p class="hint">学习进度按词库保存在当前浏览器。换浏览器、移动文件或清理数据前，请导出备份。练习方式会保存在这个浏览器中。朗读使用设备语音，声音及离线可用性取决于浏览器。</p><div class="actions"><button id="export">导出进度</button><button id="import">导入进度</button><button id="reset">重置进度</button><input type="file" id="file" accept="application/json,.json" hidden></div><p class="muted" id="note"></p><details><summary class="hint">内容来源</summary><div id="source-list"></div></details></footer>
+<footer><div id="notice" role="status" aria-live="polite"></div><p class="hint">学习进度按词库保存在当前浏览器。换浏览器、移动文件或清理数据前，请导出备份。练习方式会保存在这个浏览器中。朗读使用设备语音，声音及离线可用性取决于浏览器。</p><div class="actions"><button id="export">导出进度</button><button id="import">导入进度</button><button id="reset">重置进度</button><input type="file" id="file" accept="application/json,.json" hidden></div><p class="muted" id="profile"></p><p class="muted" id="note"></p><details><summary class="hint">内容来源</summary><div id="source-list"></div></details></footer>
 </div>
 </main><script type="application/json" id="vocab-library">__VOCAB_LIBRARY__</script><script>
 'use strict';
@@ -261,6 +261,8 @@ function setDeck(deckId) {
   cardById = new Map(D.cards.map(card => [card.id, card])); ids = new Set(cardById.keys());
   $('title').textContent = D.title || '剧有词学习器';
   document.title = (D.title || '剧有词学习器') + ' · 剧有词';
+  const profile = [D.language, D.exam_target, D.level_target].filter(Boolean).join(' · ');
+  $('profile').textContent = profile ? `词汇范围：${profile}${D.selection_basis ? ' · ' + D.selection_basis : ''}` : '';
   $('note').textContent = D.note || '';
   $('source-list').replaceChildren();
   for (const source of D.sources || []) {

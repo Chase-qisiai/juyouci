@@ -8,6 +8,11 @@
 {
   "title": "剧名 S01E01 · 词汇学习",
   "deck_id": "show-slug:S01E01:zh",
+  "language": "English",
+  "exam_target": "CET-4",
+  "level_target": "B1-B2",
+  "selection_basis": "目标语言原字幕；按 CET-4 高频范围筛选",
+  "difficulty_feedback": "",
   "sources": ["真实来源 URL 或用户提供的字幕文件名称"],
   "note": "可选说明，例如材料不足，仅提取 32 条。",
   "cards": [
@@ -24,7 +29,7 @@
 }
 ```
 
-`title` 和 `deck_id` 必填；`sources` 必须是字符串数组；`cards` 接受 1–500 条。每张卡的 `term`、`meaning`、`ipa`、`sentence`、`translation` 都是非空纯文本，不放 HTML 标记。`answers` 和 `targets` 可省略，必须是非空字符串数组；省略时分别默认为 `[term]` 和 `[term]`。只把语义正确、拼写确实可接受的形式放入 `answers`。
+`title` 和 `deck_id` 必填；`language`、`exam_target`、`level_target`、`selection_basis`、`difficulty_feedback` 可选，缺省使用空字符串；`sources` 必须是字符串数组；`cards` 接受 1–500 条。每张卡的 `term`、`meaning`、`ipa`、`sentence`、`translation` 都是非空纯文本，不放 HTML 标记。`answers` 和 `targets` 可省略，必须是非空字符串数组；省略时分别默认为 `[term]` 和 `[term]`。只把语义正确、拼写确实可接受的形式放入 `answers`。
 
 `deck_id` 对一个剧集及语言必须稳定，例如 `show-slug:S01E01:zh`。更新同一集时沿用原 ID，不要因标题、字幕来源或词条顺序变化而另建重复 deck。同 ID 导入表示更新该集：元信息和卡片列表采用新版本；同 ID 词条保留已有进度，新加入或身份变化的词条从未学习开始。其他剧集 deck 与进度不变。
 
@@ -55,7 +60,7 @@
 }
 ```
 
-集合内每个 deck 使用上面的单集词库结构。首次创建学习器时，`decks` 至少包含本次首集词库；不可生成空库。后续只向集合新增或替换 deck，然后把完整集合安全写回固定母版 HTML。对 JSON 做安全序列化，避免词条中的 `</script>`、`<`、`>`、`&`、U+2028 或 U+2029 破坏内嵌数据；页面以 `textContent` 等安全方式渲染用户字幕文本。
+集合内每个 deck 使用上面的单集词库结构。首次创建学习器时，`decks` 至少包含本次首集词库；不可生成空库。后续只向集合新增或替换 deck，然后把完整集合安全写回固定母版 HTML。对 JSON 做安全序列化，避免词条中的 `</script>`、`<`、`>`、`&`、U+2028 或 U+2029 破坏内嵌数据；页面以 `textContent` 等安全方式渲染用户字幕文本。页面中的词库说明应显示学习语言和考试/等级范围，方便用户判断这批词按什么标准筛出。
 
 ## 词库、进度和偏好边界
 
